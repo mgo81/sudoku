@@ -25,7 +25,9 @@ def create_puzzle():
 def create_available():
     """list of available possible numbers for each cell"""
     available = create_puzzle()
-    cell = range(1,10)[:]
+    cell = []
+    for i in range(1,  10):
+        cell.append(i)
     shuffle(cell)
     for row in range(9):
         for column in range(9):
@@ -156,7 +158,9 @@ def empty_squares(puzzle, difficulty):
     
 def main():
     """main"""
-    return
+    puzzle = generate_puzzle()
+    puzzle = empty_squares(puzzle, 1)
+    print_grid(puzzle)
 
 main()
 
