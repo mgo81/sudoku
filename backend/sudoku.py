@@ -159,8 +159,10 @@ def empty_squares(puzzle, difficulty):
 def main():
     """main"""
     puzzle = generate_puzzle()
+    print(puzzle)
     puzzle = empty_squares(puzzle, 1)
     print_grid(puzzle)
+    print(puzzle)
 
 main()
 

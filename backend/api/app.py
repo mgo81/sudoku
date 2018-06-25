@@ -181,9 +181,13 @@ def get_puzzle():
         abort(400)
     return jsonify({'puzzle': puzzle})
 
-@app.route('/api/v1/puzzle/check', methods=['GET'])
+@app.route('/api/v1/puzzle/check', methods=['POST'])
 def check_puzzle():
-    return
+    puzzle = request.json["puzzle"]
+    solution = False
+    if check_solution(puzzle):
+        solution = True
+    return jsonify({'solution': solution})
 
 @app.route('/api/v1/puzzle/solution', methods=['GET'])
 def get_solution():
