@@ -189,9 +189,12 @@ def check_puzzle():
         solution = True
     return jsonify({'solution': solution})
 
-@app.route('/api/v1/puzzle/solution', methods=['GET'])
+@app.route('/api/v1/puzzle/solution', methods=['POST'])
 def get_solution():
-    return
+    puzzle = request.json["puzzle"]
+    puzzle = generate_solution(puzzle)
+    return jsonify({'puzzle': puzzle})
+        
 
 """
 user
