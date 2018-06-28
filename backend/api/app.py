@@ -7,6 +7,7 @@ import pymysql.cursors
 import bcrypt
 
 import random
+
 import string
 
 connection = pymysql.connect(host='localhost',
@@ -58,7 +59,7 @@ def create_available():
     cell = []
     for i in range(1,  10):
         cell.append(i)
-    shuffle(cell)
+    random.shuffle(cell)
     for row in range(9):
         for column in range(9):
             available[row][column] = cell[:]
@@ -181,7 +182,7 @@ def empty_squares(puzzle, difficulty):
     """makes some squares empty depending on difficulty level"""
     for i in range(9):
         for j in range(9):
-            x = randint(0,difficulty)
+            x = random.randint(0,difficulty)
             if x == 0:
                 puzzle[i][j] = 0
     return puzzle
@@ -196,15 +197,11 @@ puzzle
 @app.route('/api/v1/puzzle/generate', methods=['GET'])
 def get_puzzle():
     difficulty = request.args.get('difficulty')
-    puzzle = generate_puzzle()
-    if difficulty == "easy":
-        puzzle = empty_squares(puzzle, 3)
-    elif difficulty == "medium":
-        puzzle = empty_squares(puzzle, 2)
-    elif difficulty == "hard":
-        puzzle = empty_squares(puzzle, 1)
-    else:
+    if not difficulty or difficulty not in ["easy", "medium", "hard"]:
         abort(400)
+    data = query("SELECT difficulty_id FROM difficulties WHERE difficulty_name = %s", (difficulty))
+    puzzle = generate_puzzle()
+    puzzle = empty_squares(puzzle, data[0]["difficulty_id"])
     return jsonify({'puzzle': puzzle})
 
 @app.route('/api/v1/puzzle/check', methods=['POST'])
