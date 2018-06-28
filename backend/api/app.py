@@ -3,8 +3,32 @@ from flask import Flask
 from flask import abort
 from flask import request
 from flask import jsonify
+import pymysql.cursors
+import bcrypt
 
-from random import *
+import random
+import string
+
+connection = pymysql.connect(host='localhost',
+                             user='root',
+                             password='',
+                             db='Sudoku',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+
+def query(sql, values=""):
+    try:
+        with connection.cursor() as cursor:
+            if values != "":
+                cursor.execute(sql, values)
+                result = cursor.fetchall()
+            else:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+        connection.commit()
+    finally:
+        connection.close
+    return result
 
 def check_solution(puzzle):
     """checks if sudoku puzzle is correct"""
@@ -164,6 +188,8 @@ def empty_squares(puzzle, difficulty):
 
 app = Flask(__name__)
 
+
+
 """
 puzzle
 """
@@ -201,26 +227,109 @@ user
 """
 @app.route('/api/v1/user/signup', methods=['POST'])
 def signup():
-    return
+    username = request.json["username"]
+    password = request.json["password"].encode()
+    if not username or not password:
+        abort(400)
+    salt = "yeet"
+    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+    token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=32))
+    data = query("SELECT user_name FROM Users")
+    for user in data:
+        if user["user_name"] == username:
+            abort(400)
+    data = query("INSERT INTO Users (user_name, user_hash, user_token) VALUES (%s, %s, %s);", (username, hashed, token))
+    return jsonify({'data': data})
 
 @app.route('/api/v1/user/login', methods=['POST'])
 def login():
-    return
+    username = request.json["username"]
+    password = request.json["password"].encode()
+    if not username or not password:
+        abort(400)
+    data = query("SELECT user_hash FROM Users WHERE user_name = %s", (username))
+    hash = data[0]["user_hash"].encode()
+    if bcrypt.checkpw(password, hash):
+        token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=32))
+        data = query("UPDATE Users SET user_token = %s WHERE user_name = %s", (token, username))
+    else:
+        abort(400)
+    return jsonify({'data': data})
 
 @app.route('/api/v1/user/logout', methods=['POST'])
 def logout():
-    return
+    username = request.json["username"]
+    password = request.json["password"].encode()
+    if not username or not password:
+        abort(400)
+    data = query("SELECT user_hash FROM Users WHERE user_name = %s", (username))
+    hash = data[0]["user_hash"].encode()
+    if bcrypt.checkpw(password, hash):
+        data = query("UPDATE Users SET user_token = %s WHERE user_name = %s", (None, username))
+    else:
+        abort(400)
+    return jsonify({'data': data})
 
 """
 hiscores
 """
 @app.route('/api/v1/hiscores', methods=['GET'])
 def get_hiscores():
-    return 
+    difficulty = request.args.get('difficulty')
+    category = request.args.get('category')
+    if not category:
+        category = "all"
+    token = request.headers.get('X-Authorization')
+    data = query("SELECT user_id FROM users WHERE user_token = %s",(token))
+    cat_string = ""
+    cat_value = ""
+    if category != "all" and category != "own":
+        print("yeet")
+        abort(400)
+    else: 
+        if category == "own" and len(data) == 1:
+            cat_string = " WHERE users.user_id = %s "
+            cat_value = [data[0]["user_id"]]
+    if difficulty:    
+        data = query("SELECT difficulty_id FROM difficulties WHERE difficulty_name = %s", (difficulty))
+        if len(data) == 1:
+            if len(cat_string) == 0:
+                cat_string = " WHERE hiscores.hiscore_difficulty = %s "
+                cat_value = [data[0]["difficulty_id"]]
+            else:
+                cat_string += "AND hiscores.hiscore_difficulty = %s "
+                cat_value.append(data[0]["difficulty_id"])
+    
+    data = query("""SELECT hiscores.hiscore_time, users.user_name, difficulties.difficulty_name 
+        FROM hiscores 
+        INNER JOIN users ON users.user_id = hiscores.hiscore_user_id
+        INNER JOIN difficulties ON difficulties.difficulty_id = hiscores.hiscore_difficulty
+        """ + cat_string + """
+        ORDER BY hiscores.hiscore_time
+        LIMIT 10""", tuple(cat_value))
+        
+    return jsonify({'data': data})
 
 @app.route('/api/v1/hiscores', methods=['POST'])
 def post_hiscores():
-    return 
+    token = request.headers.get('X-Authorization')
+    if not token:
+        abort(401)
+    data = query("SELECT user_id FROM users WHERE user_token = %s", (token))
+    if len(data) == 0:
+        abort(403)
+    user = data[0]["user_id"]
+    try:
+        score = int(request.json["score"])
+    except ValueError:
+        abort(400)
+    difficulty = request.json["difficulty"]
+    if score < 0 or difficulty not in ["easy", "medium", "hard"]:
+        abort(400)
+    data = query("SELECT difficulty_id FROM difficulties WHERE difficulty_name = %s", (difficulty))
+    data = query("INSERT INTO Hiscores (hiscore_user_id, hiscore_time, hiscore_difficulty) VALUES (%s, %s, %s)", (user, score, data[0]["difficulty_id"]))
+
+    return jsonify({'data': data})
 
 
 
