@@ -1,9 +1,5 @@
 #!flask/bin/python
 from flask import Flask
-import pymysql.cursors
-import bcrypt
-import random
-import string
 
 from config.db import query
 import puzzle.puzzle_controller as puzzle
