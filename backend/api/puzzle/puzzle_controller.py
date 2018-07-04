@@ -34,3 +34,7 @@ def get_solution():
     except:
         abort(400)
     return jsonify({'data': puzzle})
+
+def get_difficulties():
+    difficulties = model.get_difficulties()
+    return jsonify({'data': difficulties})

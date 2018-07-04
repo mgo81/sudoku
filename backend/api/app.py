@@ -1,11 +1,14 @@
 #!flask/bin/python
 from flask import Flask
 
+from flask_cors import CORS
+
 from config.db import query
 import puzzle.puzzle_controller as puzzle
 import user.user_controller as user
 import hiscore.hiscore_controller as hiscore
 app = Flask(__name__)
+CORS(app)
 
 """
 puzzle
@@ -21,6 +24,10 @@ def check_puzzle():
 @app.route('/api/v1/puzzle/solution', methods=['POST'])
 def get_solution():
     return puzzle.get_solution()
+
+@app.route('/api/v1/puzzle/difficulties', methods=['GET'])
+def get_difficulties():
+    return puzzle.get_difficulties()
         
 
 """

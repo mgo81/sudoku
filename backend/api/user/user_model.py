@@ -7,6 +7,8 @@ def get_username():
 def insert_user(username, hashed, token):
     data = query("""INSERT INTO Users (user_name, user_hash, user_token) 
                     VALUES (%s, %s, %s);""", (username, hashed, token))
+    data = query("""SELECT user_id, user_token FROM Users 
+                    WHERE user_token = %s""", (token))
     return data
 
 def get_hash(username):
@@ -17,6 +19,8 @@ def get_hash(username):
 def add_token(token, username):
     data = query("""UPDATE Users SET user_token = %s 
                     WHERE user_name = %s""", (token, username))
+    data = query("""SELECT user_id, user_token FROM Users
+                    WHERE user_token = %s""", (token))
     return data
 
 def remove_token(user_id):

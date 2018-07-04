@@ -27,16 +27,17 @@ def get_hiscores():
             cat_string = " WHERE users.user_id = %s "
             cat_value = [user]
     if difficulty:
-        difficulty_id = model.get_difficulty(difficulty)
-        if len(difficulty_id) != 1:
-            abort(400)
-        difficulty_id = difficulty_id[0]["difficulty_id"]
-        if len(cat_string) == 0:
-            cat_string = " WHERE hiscores.hiscore_difficulty = %s "
-            cat_value = [difficulty_id]
-        else:
-            cat_string += "AND hiscores.hiscore_difficulty = %s "
-            cat_value.append(difficulty_id)
+        if difficulty != "all":
+            difficulty_id = model.get_difficulty(difficulty)
+            if len(difficulty_id) != 1:
+                abort(400)
+            difficulty_id = difficulty_id[0]["difficulty_id"]
+            if len(cat_string) == 0:
+                cat_string = " WHERE hiscores.hiscore_difficulty = %s "
+                cat_value = [difficulty_id]
+            else:
+                cat_string += "AND hiscores.hiscore_difficulty = %s "
+                cat_value.append(difficulty_id)
     hiscores = model.get_hiscores(cat_string, cat_value)
     return jsonify({'data': hiscores})
 

@@ -1,0 +1,90 @@
+table {
+  margin: 0 auto;
+  margin-top: 0 auto;
+  border-collapse: collapse;
+  font-family: Calibri, sans-serif;
+  background-color: white;
+}
+
+colgroup,
+tbody {
+  border: solid medium;
+}
+
+td {
+  border: solid thin;
+  height: 67px;
+  width: 67px;
+  text-align: center;
+  padding: 0;
+}
+
+#signup-form {
+  border-radius: 4px;
+  width: 600px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+}
+
+#login-form {
+  border-radius: 4px;
+  width: 600px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+}
+
+body {
+  background-color: #212529;
+  /*background-color: #46c9ad;*/
+  /*color: white;*/
+}
+
+h1 {
+  font-size: 80px;
+  color: white;
+}
+
+.header {
+  height: 180px;
+  background-color: #212529;
+  color: #212529;
+}
+
+.nav {
+  margin-left: -70px;
+}
+
+li {
+  color: white;
+}
+
+li:hover {
+  cursor: pointer;
+}
+
+a {
+  color: white;
+}
+
+a:hover {
+  color: white;
+}
+
+#hiscores {
+  margin: 0 auto;
+  width: 600px;
+  height: 1000px;
+  padding: 0px;
+}
+
+#inner {
+  border-radius: 4px;
+  margin-top: 8px;
+  background-color: white;
+  width: 600px;
+  height: 450px;
+  padding-left: 20px;
+  padding-top: 10px;
+}

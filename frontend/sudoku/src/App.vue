@@ -1,60 +1,73 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
-  </div>
+    <div id="app">
+        <div class="header">
+            <div class="container">
+                <div class="row">
+                    <h1>Sudoku</h1>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <ul>
+                            <div class="nav">
+                                <li class="nav-item"><a class="nav-link" @click="$router.push('/play')">Play</a></li>
+                                <li class="nav-item"><a class="nav-link" @click="$router.push('/solve')">Solver</a></li>
+                                <li class="nav-item"><a class="nav-link" @click="$router.push('/hiscores')">Hiscores</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6">
+                        <ul>
+                            <div class="nav" style="float: right">
+                                <li v-if="!users.token" class="nav-item"><a class="nav-link" @click="$router.push('/login')">Login</a></li>
+                                <li v-if="!users.token" class="nav-item"><a class="nav-link" @click="$router.push('/signup')">Signup</a></li>
+                                <li v-if="users.token" class="nav-item"><a class="nav-link" v-on:click="logOut" @click="$router.push('/')">Logout</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+
+            <router-view>
+            </router-view>
+        </div>
+    </div>
 </template>
 
 <script>
+import Cookies from "js-cookie";
+import Users from "./users.js";
 export default {
-  name: 'app',
-  data () {
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      users: Users,
+      tokenTrue: false
+    };
+  },
+  mounted: function() {
+    if (Cookies.get("token")) {
+      this.users.token = Cookies.get("token");
+      this.users.id = Cookies.get("id");
+    }
+  },
+  methods: {
+    logOut: function() {
+      this.$http
+        .post(
+          "http://localhost:5000/api/v1/user/logout",
+          {},
+          {
+            headers: { "X-Authorization": Cookies.get("token") }
+          }
+        )
+        .then(function() {
+          Cookies.remove("token");
+          Cookies.remove("id");
+          this.users.token = null;
+          this.users.id = null;
+        });
     }
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
-</style>

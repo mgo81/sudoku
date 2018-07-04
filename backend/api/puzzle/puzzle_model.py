@@ -6,10 +6,10 @@ def check_solution(puzzle):
     """checks if sudoku puzzle is correct"""
     for i in range(9):
         for j in range(9):
-            if puzzle[i][j] == 0:
+            if puzzle[i][j] == "":
                 return False
             num = puzzle[i][j]
-            puzzle[i][j] = 0
+            puzzle[i][j] = ""
             if check_cell(puzzle, i, j, num):
                 puzzle[i][j] = num
             else:
@@ -17,8 +17,8 @@ def check_solution(puzzle):
     return True
 
 def create_puzzle():
-    """creates a 9x9 grid of 0"""
-    column = [0] * 9
+    """creates a 9x9 grid of """
+    column = [""] * 9
     puzzle = []
     for i in range(9):
         puzzle.append(column[:])
@@ -41,7 +41,7 @@ def create_adjustable(puzzle):
     adjustable = create_puzzle()
     for i in range(9):
         for j in range(9):
-            if puzzle[i][j] == 0:
+            if puzzle[i][j] == "":
                 adjustable[i][j] = 1
     return adjustable[:]
 
@@ -89,7 +89,7 @@ def generate_solution(puzzle):
                 print("cant be solved")
                 return []
             if adjustable[i][j]:
-                puzzle[i][j] = 0
+                puzzle[i][j] = ""
                 try:
                     while True:
                         num = available[i][j][0]
@@ -101,7 +101,7 @@ def generate_solution(puzzle):
                     previous = 1
                 except IndexError:
                     available[i][j] = range(1,10)[:]
-                    puzzle[i][j] = 0
+                    puzzle[i][j] = ""
                     if j > 0:
                         j -= 1
                         previous = -1
@@ -119,6 +119,8 @@ def generate_solution(puzzle):
                         i -= 1
                         j = 8
         i += 1
+    if not check_solution(puzzle):
+        return []
     return puzzle
 
 def generate_puzzle():
@@ -139,13 +141,13 @@ def generate_puzzle():
                 j += 1
             except IndexError:
                 available[i][j] = range(1,10)[:]
-                puzzle[i][j] = 0
+                puzzle[i][j] = ""
                 if j > 0:
                     j -= 1
                 else:
                     i -= 1
                     j = 8
-                puzzle[i][j] = 0
+                puzzle[i][j] = ""
         i += 1
     return puzzle
 
@@ -155,9 +157,14 @@ def empty_squares(puzzle, difficulty):
         for j in range(9):
             x = random.randint(0,difficulty)
             if x == 0:
-                puzzle[i][j] = 0
+                puzzle[i][j] = ""
     return puzzle
 
 def get_difficulty(difficulty):
         data = query("SELECT difficulty_id FROM difficulties WHERE difficulty_name = %s", (difficulty))
         return data[0]["difficulty_id"]
+
+def get_difficulties():
+    data = query("""SELECT difficulty_name FROM difficulties
+                    ORDER BY difficulty_id DESC""")
+    return data
