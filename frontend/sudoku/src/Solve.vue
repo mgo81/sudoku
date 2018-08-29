@@ -75,7 +75,7 @@ export default {
       }
 
       this.$http
-        .post("http://localhost:9000/api/v1/puzzle/solution", {
+        .post("http://rafaelgoesmann:9000/api/v1/puzzle/solution", {
           puzzle: temp
         })
         .then(function(response) {

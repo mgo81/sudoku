@@ -79,7 +79,7 @@ export default {
 
       this.$http
         .get(
-          "http://localhost:9000/api/v1/puzzle/generate?difficulty=" +
+          "http://rafaelgoesmann:9000/api/v1/puzzle/generate?difficulty=" +
             this.difficulty
         )
         .then(function(response) {
@@ -97,7 +97,7 @@ export default {
     },
     getDifficulties: function() {
       this.$http
-        .get("http://localhost:9000/api/v1/puzzle/difficulties")
+        .get("http://rafaelgoesmann:9000/api/v1/puzzle/difficulties")
         .then(function(response) {
           this.difficulties = response.data.data;
         });
@@ -112,7 +112,7 @@ export default {
       }
 
       this.$http
-        .post("http://localhost:9000/api/v1/puzzle/check", {
+        .post("http://rafaelgoesmann:9000/api/v1/puzzle/check", {
           puzzle: temp
         })
         .then(function(response) {
@@ -125,7 +125,7 @@ export default {
             this.allowIncrement = false;
             if (Cookies.get("token")) {
               this.$http.post(
-                "http://localhost:9000/api/v1/hiscores",
+                "http://rafaelgoesmann:9000/api/v1/hiscores",
                 {
                   difficulty: this.difficulty,
                   score: this.seconds

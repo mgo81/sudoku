@@ -54,7 +54,7 @@ export default {
         event.preventDefault();
       } else {
         this.$http
-          .post("http://localhost:5000/api/v1/user/login", {
+          .post("http://rafaelgoesmann:9000/api/v1/user/login", {
             username: this.username,
             password: this.password
           })
