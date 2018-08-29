@@ -78,10 +78,7 @@ export default {
       this.generated = true;
 
       this.$http
-        .get(
-          "http://rafaelgoesmann:9000/api/v1/puzzle/generate?difficulty=" +
-            this.difficulty
-        )
+        .get("https://formality.rafaelgoesmann.com/api/getAllListings")
         .then(function(response) {
           let i = response.data.data;
           this.puzzle = [
