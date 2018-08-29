@@ -1,5 +1,21 @@
 <template>
-    <div>
+    <div>  
+        <div class="row" style="width: 630px; margin: 0 auto;">
+            <div class="col-sm-5">
+                <label for="diffselect" style="color: white;">Difficulty</label>
+                <select v-model="difficulty" class="form-control" id="diffselect">
+                    <option v-for="diff in difficulties" v-bind:key="diff">{{diff.difficulty_name}}</option>
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group" style="padding: 0px;">
+                    <button v-on:click="getBoard" class="btn btn-primary" style="bottom: 0px; position: absolute;">Generate</button>
+                </div>
+                <div style="color: white; margin-left: 150px; margin-top: 40px;">{{seconds}}</div> 
+            </div>
+             
+                         
+        </div>
         <form id="puzzle-form" @submit.prevent="processForm">
             <table>
                 <colgroup><col><col><col></colgroup>
@@ -17,8 +33,11 @@
             <div v-if="alerts" class="alert alert-danger" role="alert" style="margin: 0 auto; width: 540px;">
                 Incorrect
             </div>
+            <div v-if="alertsGood" class="alert alert-success" role="alert" style="margin: 0 auto; width: 540px;">
+                Correct
+            </div>
             <div class="form-group" style="text-align: center;">
-                <button type="submit" class="btn btn-primary">Check</button>
+                <button v-if="generated" type="submit" class="btn btn-primary">Check</button>
             </div>
 
         </form>
@@ -26,21 +45,43 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
+import Users from "./users.js";
 export default {
   data() {
     return {
       puzzle: [],
       check: [],
-      alerts: false
+      alerts: false,
+      alertsGood: false,
+      difficulty: "easy",
+      difficulties: [],
+      generated: false,
+      seconds: 0,
+      allowIncrement: false,
+      users: Users
     };
   },
   mounted: function() {
-    this.getBoard();
+    if (Cookies.get("token")) {
+      this.users.token = Cookies.get("token");
+      this.users.id = Cookies.get("id");
+    }
+    this.timer();
+    this.getDifficulties();
   },
   methods: {
     getBoard: function() {
+      this.alerts = false;
+      this.alertsGood = false;
+      this.allowIncrement = false;
+      this.generated = true;
+
       this.$http
-        .get("http://localhost:5000/api/v1/puzzle/generate?difficulty=easy")
+        .get(
+          "http://localhost:5000/api/v1/puzzle/generate?difficulty=" +
+            this.difficulty
+        )
         .then(function(response) {
           let i = response.data.data;
           this.puzzle = [
@@ -50,6 +91,15 @@ export default {
           ];
 
           this.check = JSON.parse(JSON.stringify(this.puzzle));
+          this.allowIncrement = true;
+          this.seconds = 0;
+        });
+    },
+    getDifficulties: function() {
+      this.$http
+        .get("http://localhost:5000/api/v1/puzzle/difficulties")
+        .then(function(response) {
+          this.difficulties = response.data.data;
         });
     },
     processForm: function() {
@@ -67,14 +117,42 @@ export default {
         })
         .then(function(response) {
           if (response.data.data == false) {
+            this.alertsGood = false;
             this.alerts = true;
           } else {
             this.alerts = false;
+            this.alertsGood = true;
+            this.allowIncrement = false;
+            if (Cookies.get("token")) {
+              this.$http.post(
+                "http://localhost:5000/api/v1/hiscores",
+                {
+                  difficulty: this.difficulty,
+                  score: this.seconds
+                },
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-Authorization": Cookies.get("token")
+                  }
+                }
+              );
+            }
           }
           console.log(response.data);
           temp = [];
           i = 0;
         });
+    },
+    timer() {
+      this.seconds = 0;
+      setInterval(() => {
+        if (this.allowIncrement) {
+          this.seconds += 1;
+        }
+
+        console.log(this.seconds);
+      }, 1000);
     }
   }
 };

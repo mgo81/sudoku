@@ -65,6 +65,7 @@ export default {
       this.check = JSON.parse(JSON.stringify(this.puzzle));
     },
     processForm: function() {
+      this.alerts = false;
       let temp = [];
       let i = 0;
       for (let tbod of this.puzzle) {

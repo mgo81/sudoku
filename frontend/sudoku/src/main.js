@@ -18,7 +18,7 @@ Vue.use(VueResource);
 const routes = [
   {
     path: "/",
-    component: Users
+    component: Play
   },
   {
     path: "/play",
