@@ -9,18 +9,18 @@
                     <div class="col-sm-6">
                         <ul>
                             <div class="nav">
-                                <li class="nav-item"><a class="nav-link" @click="$router.push('/play')">Play</a></li>
-                                <li class="nav-item"><a class="nav-link" @click="$router.push('/solve')">Solver</a></li>
-                                <li class="nav-item"><a class="nav-link" @click="$router.push('/hiscores')">Hiscores</a></li>
+                                <li class="nav-item"><a class="nav-link" @click="$router.push('/sudoku/play')">Play</a></li>
+                                <li class="nav-item"><a class="nav-link" @click="$router.push('/sudoku/solve')">Solver</a></li>
+                                <li class="nav-item"><a class="nav-link" @click="$router.push('/sudoku/hiscores')">Hiscores</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="col-sm-6">
                         <ul>
                             <div class="nav" style="float: right">
-                                <li v-if="!users.token" class="nav-item"><a class="nav-link" @click="$router.push('/login')">Login</a></li>
-                                <li v-if="!users.token" class="nav-item"><a class="nav-link" @click="$router.push('/signup')">Signup</a></li>
-                                <li v-if="users.token" class="nav-item"><a class="nav-link" v-on:click="logOut" @click="$router.push('/')">Logout</a></li>
+                                <li v-if="!users.token" class="nav-item"><a class="nav-link" @click="$router.push('/sudoku/login')">Login</a></li>
+                                <li v-if="!users.token" class="nav-item"><a class="nav-link" @click="$router.push('/sudoku/signup')">Signup</a></li>
+                                <li v-if="users.token" class="nav-item"><a class="nav-link" v-on:click="logOut" @click="$router.push('/sudoku')">Logout</a></li>
                             </div>
                         </ul>
                     </div>

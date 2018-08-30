@@ -50,7 +50,7 @@ export default {
   mounted: function() {
     console.log(this.users.token);
     if (this.users.token || Cookies.get("token")) {
-      this.$router.push("/");
+      this.$router.push("/sudoku");
     }
   },
   methods: {
@@ -93,7 +93,7 @@ export default {
             this.users.token = this.token;
             this.users.id = this.id;
             console.log(Users.token);
-            this.$router.push("/");
+            this.$router.push("/sudoku");
           })
           .catch(function(error) {
             this.alertsU = true;
