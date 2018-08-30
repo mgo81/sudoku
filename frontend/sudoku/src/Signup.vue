@@ -81,7 +81,7 @@ export default {
         event.preventDefault();
       } else {
         this.$http
-          .post("http://rafaelgoesmann.com:9000/api/v1/user/signup", {
+          .post("https://sudoku.rafaelgoesmann.com:9000/api/v1/user/signup", {
             username: this.username,
             password: this.password
           })

@@ -73,7 +73,9 @@ export default {
   methods: {
     getDifficulties: function() {
       this.$http
-        .get("http://rafaelgoesmann.com:9000/api/v1/puzzle/difficulties")
+        .get(
+          "https://sudoku.rafaelgoesmann.com:9000/api/v1/puzzle/difficulties"
+        )
         .then(function(response) {
           this.difficulties = response.data.data;
           this.getHiscores();
@@ -82,7 +84,7 @@ export default {
     getHiscores: function() {
       this.$http
         .get(
-          "http://rafaelgoesmann.com:9000/api/v1/hiscores?category=" +
+          "https://sudoku.rafaelgoesmann.com:9000/api/v1/hiscores?category=" +
             this.category +
             "&difficulty=" +
             this.difficulty,
