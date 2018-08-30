@@ -75,7 +75,7 @@ export default {
       }
 
       this.$http
-        .post("https://sudoku.rafaelgoesmann.com:9000/api/v1/puzzle/solution", {
+        .post("https://sudoku.rafaelgoesmann.com/api/v1/puzzle/solution", {
           puzzle: temp
         })
         .then(function(response) {

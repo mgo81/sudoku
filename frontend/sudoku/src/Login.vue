@@ -54,7 +54,7 @@ export default {
         event.preventDefault();
       } else {
         this.$http
-          .post("https://sudoku.rafaelgoesmann.com:9000/api/v1/user/login", {
+          .post("https://sudoku.rafaelgoesmann.com/api/v1/user/login", {
             username: this.username,
             password: this.password
           })
