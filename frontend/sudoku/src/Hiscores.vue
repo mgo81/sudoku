@@ -73,7 +73,7 @@ export default {
   methods: {
     getDifficulties: function() {
       this.$http
-        .get("http://rafaelgoesmann:9000/api/v1/puzzle/difficulties")
+        .get("http://rafaelgoesmann.com:9000/api/v1/puzzle/difficulties")
         .then(function(response) {
           this.difficulties = response.data.data;
           this.getHiscores();
@@ -82,7 +82,7 @@ export default {
     getHiscores: function() {
       this.$http
         .get(
-          "http://rafaelgoesmann:9000/api/v1/hiscores?category=" +
+          "http://rafaelgoesmann.com:9000/api/v1/hiscores?category=" +
             this.category +
             "&difficulty=" +
             this.difficulty,

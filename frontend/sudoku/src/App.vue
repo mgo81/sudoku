@@ -55,7 +55,7 @@ export default {
     logOut: function() {
       this.$http
         .post(
-          "http://rafaelgoesmann:9000/api/v1/user/logout",
+          "http://rafaelgoesmann.com:9000/api/v1/user/logout",
           {},
           {
             headers: { "X-Authorization": Cookies.get("token") }
