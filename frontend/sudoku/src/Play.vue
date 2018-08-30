@@ -79,7 +79,7 @@ export default {
 
       this.$http
         .get(
-          "https://sudoku.rafaelgoesmann/api/v1/puzzle/generate?difficulty=" +
+          "https://sudoku.rafaelgoesmann.com/api/v1/puzzle/generate?difficulty=" +
             this.difficulty
         )
         .then(function(response) {
